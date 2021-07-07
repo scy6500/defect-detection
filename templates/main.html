@@ -40,6 +40,14 @@
 
                 <script>
                     document.getElementById("submit").onclick = () => {
+                        const originImage = document.getElementById('Image');
+                        const image = document.getElementById('inferenceImage');
+
+                        originImage.src = "";
+                        image.src = "";
+
+                        document.getElementById("originTag").style.display = "none";
+                        document.getElementById("inferenceTag").style.display = "none";
 
                         document.getElementById("submit").disabled = true;
                         document.getElementById("errorbox").innerHTML = "";
