@@ -46,11 +46,15 @@ def post_process(output, threshold=0.5):
 
 
 def image_saver(origin, mask, save_path="./output/output.png"):
+    z = np.zeros((256, 1600, 4))
     for w in range(len(mask)):
-        for p in range(len(mask[w])):
-            if mask[w][p] > 0:
-                origin[w][p] = np.array([255, 0, 255])
-    plt.imsave(save_path, origin)
+        for c in range(len(mask[w])):
+            if mask[w][c] > 0:
+                z[w][c] = np.concatenate((((0.7*origin[w][c])+(0.3*np.array([244, 89, 163]))), [150]))
+            else:
+                z[w][c] = np.concatenate((origin[w][c], [255]))
+    z = np.array(z, dtype=np.uint8)
+    plt.imsave(save_path, z)
 
 
 @app.route('/predict', methods=['POST'])
