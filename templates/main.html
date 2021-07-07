@@ -14,10 +14,12 @@
         <div class = "container">
             <div class="jumbotron mt-3">
 
-                <h1>defect detection</h1>
+                <h1>Defect Detection</h1>
+
+                <div>이 모델은 <a href="https://arxiv.org/abs/1505.04597">U-Net</a>을 kaggle의 <a href="https://www.kaggle.com/c/severstal-steel-defect-detection">Steel Defect Detection 데이터</a>를 가지고 학습한 모델입니다.</div>
+                <div>이 모델을 통해 강철 표면에 존재하는 결함을 감지할 수 있습니다.</div><br>
 
 
-                <h2>Let’s Try!</h2>
                 <div id = "selectType" style="margin-top: 5px; margin-bottom: 5px;">
                 </div>
                 <div id = 'inputFile'>
@@ -29,8 +31,10 @@
                 <div id ='resultBox' style="margin-left: auto; margin-right: auto; margin-bottom: 40px;">
                     <p id='errorbox'></p>
                     <div id="result">
-                        <img id="image" style="max-width:100%; max-height:100%;">
-                            <br>
+                        <div id='originTag' style="display:none;">Origin Image</div>
+                        <img id="Image" style="max-width:100%; max-height:100%;"><br><br>
+                        <div id='inferenceTag' style="display:none;">Inference Image</div>
+                        <img id="inferenceImage" style="max-width:100%; max-height:100%;">
                     </div>
                 </div>
 
@@ -40,11 +44,12 @@
                         document.getElementById("submit").disabled = true;
                         document.getElementById("errorbox").innerHTML = "";
 
-                        document.getElementById("image").style.display = "none";
+                        document.getElementById("inferenceImage").style.display = "none";
 
                         const formData = new FormData();
 
                         const source = document.getElementById('source').files[0]
+                        console.log(source)
 
                         formData.append('source', source)
 
@@ -57,17 +62,21 @@
                                 document.getElementById("errorbox").innerHTML = response.status + " error";
                             }
                         }).then(data => {
-                            const image = document.getElementById('image');
+                            const originImage = document.getElementById('Image');
+                            const image = document.getElementById('inferenceImage');
                             const base64 = data["image"];
-                            src = 'data:image/png;base64,' + base64;
-                            console.log(src)
+                            const src = 'data:image/png;base64,' + base64;
                             image.src = src
+                            originImage.src = URL.createObjectURL(document.getElementById('source').files[0]);
                             document.getElementById("submit").disabled = false;
+                            document.getElementById("inferenceImage").style.display = "inline";
+                            document.getElementById("originTag").style.display = "inline";
+                            document.getElementById("inferenceTag").style.display = "inline";
                         }).catch(e =>{
                             document.getElementById("errorbox").innerHTML = e;
                             document.getElementById("submit").disabled = false;
                         });
-                        document.getElementById("image").style.display = "inline";
+
                     }
                 </script>
             </div>
