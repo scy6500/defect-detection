@@ -1,8 +1,11 @@
-FROM yeop2/defect-detection
+FROM yeop2/defect-detection as build
 
+FROM pytorch/pytorch:1.9.0-cuda10.2-cudnn7-runtime
+
+COPY --from=build /app /app
 WORKDIR /app
 
-COPY . .
+COPY . . 
 
 RUN apt update
 RUN apt install -y build-essential cmake git pkg-config libgtk-3-dev \
