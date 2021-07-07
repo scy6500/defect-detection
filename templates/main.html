@@ -1,0 +1,76 @@
+<HTML>
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+        <title>defect detection</title>
+    </head>
+    <body>
+        <div class = "container">
+            <div class="jumbotron mt-3">
+
+                <h1>defect detection</h1>
+
+
+                <h2>Let’s Try!</h2>
+                <div id = "selectType" style="margin-top: 5px; margin-bottom: 5px;">
+                </div>
+                <div id = 'inputFile'>
+                    <label for="source"> Upload file : </label>
+                    <input type = 'file' id = 'source' style="margin-right: 10px; margin-bottom: 10px;">
+                    <button id = "submit" type='submit' onclick="this.disabled=true;" class="btn btn-primary btn-lg" style="margin-left: auto;"> Run </button>
+                </div>
+
+                <div id ='resultBox' style="margin-left: auto; margin-right: auto; margin-bottom: 40px;">
+                    <p id='errorbox'></p>
+                    <div id="result">
+                        <img id="image" style="max-width:100%; max-height:100%;">
+                            <br>
+                    </div>
+                </div>
+
+                <script>
+                    document.getElementById("submit").onclick = () => {
+
+                        document.getElementById("submit").disabled = true;
+                        document.getElementById("errorbox").innerHTML = "";
+
+                        document.getElementById("image").style.display = "none";
+
+                        const formData = new FormData();
+
+                        const source = document.getElementById('source').files[0]
+
+                        formData.append('source', source)
+
+                        fetch('/predict', {method: 'POST',body: formData})
+                        .then(response => {
+                            if (response.status == 200){
+                                return response.json()
+                            }
+                            else {
+                                document.getElementById("errorbox").innerHTML = response.status + " error";
+                            }
+                        }).then(data => {
+                            const image = document.getElementById('image');
+                            const base64 = data["image"];
+                            src = 'data:image/png;base64,' + base64;
+                            console.log(src)
+                            image.src = src
+                            document.getElementById("submit").disabled = false;
+                        }).catch(e =>{
+                            document.getElementById("errorbox").innerHTML = e;
+                            document.getElementById("submit").disabled = false;
+                        });
+                        document.getElementById("image").style.display = "inline";
+                    }
+                </script>
+            </div>
+        </div>
+    </body>
+</HTML>
